@@ -1,23 +1,457 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdlib.h> //Define EXIT_SUCCESS
-
+#include <stdbool.h>
 #include <limits.h>
+#include <string.h>
+
+#include "math_lib.h"
 
 void basicExample();
 void variableNamingExample();
 void dataSizeAndTypeExample();
 void arithmeticExample();
+void blockExample();
+void conditionalExample();
+void conditionalExample2();
+void conditionalExample3();
+void switchExample(char c);
+void switchExample2(int number);
+void whileExample(int max_guess);
+int forExample(int n);
+int doWhileExample(int safe_guard);
+int functionExample(int value);
+void functionByReference(int *param);
+
+void fileWriteExample(char* text);
+void fileReadExample();
+
+void pointerExample();
+int multipleReturnValues(int a, int b, int *x, int *y);
+char* outOfScopeExample();
+
+void arraysAndPointersExample();
+void stringAsArrays();
+
+int* searchArrayItem(int* arr, int value, int l);
 
 void assignment1();
 void assignment2();
 void assignment3();
 void assignment4();
 
+#define NUMBER_TO_GUESS 2
+#define CHAR_TO_GUESS 'A'
+
+const int M = 3;
+const int N = 3;
+void insertValue(int arr[M][N], int i, int j, int val);
+void printArray(int arr[M][N]);
+
+#define SIZEOF_ARRAY( arr ) sizeof( arr ) / sizeof( arr[0] )
+
 int main(int argc, char *argv[])
 {
-    assignment4();
+    //fileWriteExample("char* text");
+    //fileReadExample();
+    //pointerExample();
+
+    //int x = 1, y = 2;
+    //
+    //multipleReturnValues(10,10, &x, &y);
+    //printf("values after: %d,%d \n", x,y);
+    //arraysAndPointersExample();
+    //stringAsArrays();
+
+    int array[] = {10,13,43,33,92,4,11};
+
+    int* p_loc = searchArrayItem(&array, 33,SIZEOF_ARRAY(array));
+    printf("value before: %p \n", p_loc);
+/*
+    char* string = outOfScopeExample();
+    puts (string) ;
+*/
+    //doWhileExample(5);
+    /*int value = 5;
+    int ref_value = 6;
+
+
+
+    printf("value before: %d \n", value);
+    int new_value = functionExample(value);
+    printf("value after: %d, %d \n", value, new_value);
+
+    int var  = 10;
+    printf("value before: %d \n", var);
+    functionByReference(&var);
+    printf("value after: %d \n", var);
+
+
+    int f = factorial(5);
+
+    int arr[3][3] = {};
+
+    insertValue(arr, 0,0, 10);
+    printArray(arr);*/
     return EXIT_SUCCESS;
+}
+
+//CHECK THIS
+//#define array_length (arr) (sizeof(arr) == 0 ? 0 : sizeof(arr)/sizeof ((arr)[0]))
+
+int* searchArrayItem(int* arr, int value, int l)
+{
+    int *parr , *parrend = arr + l;
+
+    for (parr = arr ; parr < parrend ; parr++)
+    {
+        if (*parr == value )
+            return parr ;
+    }
+
+}
+
+void stringAsArrays()
+{
+   char str[] = "This is a string.";
+   char str2[] = "aaaaa";
+   char final[100] = {};
+
+   char *pc = str ;
+
+   str[10] = 'A';
+
+   *(pc+10) = 'S';
+   //puts( str );
+
+
+   strcpy( final ,str );
+   strcpy( final ,str2 );
+   puts( final );
+
+   strncpy( final ,str,3 );
+   puts( final );
+   //https://www.tutorialspoint.com/c_standard_library/c_function_strcpy.htm
+
+   if (strcmp(final, str ) == 0) //trcmp returns 0 if string are same
+   {
+       //String are same
+   }
+
+   strcat(final, str);
+   puts( final );
+
+   char *p_loc;
+   p_loc = strchr(final, 'a');
+   if(p_loc != NULL)
+   {
+       printf("%c", *(p_loc+1)); //Print next char after first A
+   }
+
+}
+
+void arraysAndPointersExample()
+{
+    int arr[10] = {}; //Initialises arrey with zeros
+
+    printf("size of int %d, and arr %d, lenght of array %d",
+           sizeof(int),
+           sizeof(arr),
+           sizeof(arr) / sizeof(int)
+           );
+
+    int arr2[] = {5,5,5,5,5}; //Initialises arrey with values
+
+    int a = arr [0];
+
+    //These are same
+    int *p_a = arr;
+    int *p_a2 = &arr[0];
+
+    //Using pointer to initialize array with values
+    for(int i = 0; i < 8; i++)
+        *(p_a++) = 5;
+
+    //Above one is the same as this but faster
+    for(int i = 0; i < 8; i++)
+        arr[i] = 5;
+
+    //Access element 5 of array directly
+    p_a = arr;
+    *(p_a + 5) = 10;
+
+}
+
+void pointerExample()
+{
+    int a;
+    float b;
+    char c;
+
+    printf("Address of a: %p\n", &a);
+    printf("Address of b: %p\n", &b);
+    printf("Address of c: %p\n", &c);
+
+    int n = 4;
+    double pi = 3.14159;
+
+    int *p_n = &n ; /* address of n */
+    double *p_pi = &pi ; /* address of pi */
+
+    printf("Value of c: %p\n", p_n);
+    printf("Value of c: %p\n", p_pi);
+
+    //Priting value which is stored in p_pi memory location
+    printf ( "pi = %g\n" ,*p_pi ) ;
+
+    //Adding 5.0 to value which is store in p_pi memory location
+    *p_pi = *p_pi + 5.0;
+
+    printf ( "pi = %g\n" ,*p_pi ) ;
+
+}
+
+char* outOfScopeExample()
+{
+    static char msg[] = "Aren’t pointers fun?" ;
+    return msg;
+}
+
+int multipleReturnValues(int a, int b, int *p_x, int *p_y)
+{
+
+    *(p_x) = *(p_x) * 10;
+    *(p_y) = *(p_y) * 10;
+
+    return 1;
+}
+
+void fileWriteExample(char* text)
+{
+    FILE *fp;
+    fp = fopen("test.txt", "w");
+
+    /* C file open modes
+     * 	rb		open for reading (The file must exist)	beginning
+    w	wb		open for writing (creates file if it doesn't exist). Deletes content and overwrites the file.	beginning
+    a	ab		open for appending (creates file if it doesn't exist)	end
+    r+	rb+	r+b	open for reading and writing (The file must exist)	beginning
+    w+	wb+	w+b	open for reading and writing. If file exists deletes content and overwrites the file, otherwise creates an empty new file	beginning
+    a+	ab+	a+b	open for reading and writing (append if file exists)	end
+    */
+
+    if(fp != NULL)
+    {
+        fputs(text, fp);
+        fclose(fp);
+    }
+    else //IF file not open
+    {
+       printf("file can't be opened\n");
+    }
+}
+
+void fileReadExample()
+{
+    FILE *fp;
+    fp = fopen("test.txt", "r");
+    char str[60];
+    if(fp != NULL)
+    {
+        if( fgets (str, 60, fp)!=NULL)
+        {
+              /* writing content to stdout */
+              puts(str);
+        }
+        fclose(fp);
+    }
+    else //IF file not open
+    {
+       printf("file can't be opened\n");
+    }
+
+
+}
+void insertValue(int arr[M][N], int i, int j, int val)
+{
+    arr[i][j] = val;
+}
+
+void printArray(int arr[M][N])
+{
+    int i, j;
+        for (i = 0; i < M; i++)
+          for (j = 0; j < N; j++)
+            printf("%d ", arr[i][j]);
+}
+
+
+
+void functionByReference(int *param)
+{
+    printf("I've received value %d\n", *param);
+    (*param) = 5;
+}
+
+int functionExample ( int value )
+{
+    value = 7;
+    return value;
+}
+
+int continueExample(int n)
+{
+    int sumOfNonEven = 0;
+
+    for( int i = 0; i <= n ; i++)
+    {
+        if(i % 2 == 0)
+            continue;
+
+        sumOfNonEven += i;
+    }
+
+    return sumOfNonEven;
+
+}
+
+
+int doWhileExample(int safe_guard)
+{
+    int i = 0;
+    char c ;
+    do
+    {
+        puts ( "Keep going? (y/n) " ) ;
+        c = getchar () ;
+        getchar () ;
+        i++;
+
+    } while ( c == 'y' && i < safe_guard);
+
+    return 0;
+}
+
+int forExample(int n)
+{
+    int fact = 1;
+    for( int i = 1; i <= n ; i++)
+    {
+        fact *= i;
+        printf("For execution number %d, factrional %d \n", i, fact);
+    }
+
+    return fact;
+
+}
+
+void whileExample(int max_guess)
+{
+    int loops = 1;
+
+    int safety_limit = 10;
+
+    while(loops <= max_guess)
+    {
+        printf("Loop number: %d (of %d) \n", loops, max_guess);
+
+        if(loops == safety_limit)
+            break;
+
+        loops++;
+    }
+
+}
+
+void switchExample(char c)
+{
+    switch (c)
+    {
+        case CHAR_TO_GUESS: //See no curly brackets needed here
+            puts("Yes that what we are looking for");
+            puts("Congrats");
+            break;
+        case 'B': //See no curly brackets needed here
+            puts("Nope that was B");
+            break;
+        case 'C':
+        case 'D':
+        case 'E':
+            puts("Nope that was C or D or E");
+            break;
+        default:
+            puts("default excecuted!");
+            //No need for break if default is last
+    }
+}
+
+void switchExample2(int number)
+{
+    switch (number)
+    {
+        case NUMBER_TO_GUESS: //See no curly brackets needed here
+            puts("Yes that what we are looking for");
+            puts("Congrats");
+            break;
+        default:
+            puts("default excecuted!");
+            //No need for break if default is last
+    }
+}
+
+
+void conditionalExample(int guess)
+{
+    //ONLY IF EXAMPLE
+    if ( guess == NUMBER_TO_GUESS )
+    {
+        puts("You guessed right number");
+        return;
+    }
+
+    // IF - ELSE EXAMPLE
+    if ( guess % 2 == 0 )
+        puts("Yes our number is even, so you are close");
+    else
+        puts("You guessed odd but our number is even");
+
+}
+
+void conditionalExample2(int guess)
+{
+    //IF-else if - else example
+    if ( guess == NUMBER_TO_GUESS ) //For one line after if no brackets needed
+        puts("You guessed right number");
+    else if ( guess % 2 == 0 )
+        puts("Yes our number is even, so you are close");
+    else //If multiple lines then brackets needed
+    {
+        puts("You guessed odd but our number is even");
+        puts("Congrats!");
+    }
+
+
+}
+
+void conditionalExample3(int guess)
+{
+    //Using of multiple conditions (AND / OR)
+
+    if( guess == (NUMBER_TO_GUESS - 1) || guess == (NUMBER_TO_GUESS + 1) )
+        puts("Hey, you are very close");
+
+}
+
+void blockExample()
+{
+    int var = 1;
+
+    {
+        int var2 = 2;
+        printf("%d",var2);
+    }
+
+    //var2 = 2; <<- Not availble any more as outside of the block
 }
 
 void basicExample()
