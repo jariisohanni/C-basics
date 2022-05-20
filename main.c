@@ -33,6 +33,10 @@ char* outOfScopeExample();
 void arraysAndPointersExample();
 void stringAsArrays();
 
+void structExample();
+void unionExample();
+void dynamicMemoryExample();
+
 int* searchArrayItem(int* arr, int value, int l);
 
 void assignment1();
@@ -55,7 +59,10 @@ int main(int argc, char *argv[])
     //fileWriteExample("char* text");
     //fileReadExample();
     //pointerExample();
+    //structExample();
 
+    //unionExample();
+    dynamicMemoryExample();
     //int x = 1, y = 2;
     //
     //multipleReturnValues(10,10, &x, &y);
@@ -63,10 +70,12 @@ int main(int argc, char *argv[])
     //arraysAndPointersExample();
     //stringAsArrays();
 
-    int array[] = {10,13,43,33,92,4,11};
+    /*int array[] = {10,13,43,33,92,4,11};
 
-    int* p_loc = searchArrayItem(&array, 33,SIZEOF_ARRAY(array));
-    printf("value before: %p \n", p_loc);
+    int lenght_of_array = SIZEOF_ARRAY(array);
+    int* p_loc = searchArrayItem(&array, 33,lenght_of_array);
+    printf("value before: %p \n", p_loc);*/
+
 /*
     char* string = outOfScopeExample();
     puts (string) ;
@@ -96,6 +105,143 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
+void dynamicMemoryExample()
+{
+    int number_of_elements = 100;
+
+    int* ip = (int*) malloc(sizeof(int) * number_of_elements);
+
+    if(ip == NULL)
+        return; //Manage the error why we were not able to reserve memory
+
+    memset(ip,50,sizeof(int) * number_of_elements);
+
+    for(int i = 0; i < number_of_elements; i++)
+    {
+        ip[i] = 0;
+    }
+
+    free(ip);
+    ip = NULL;
+
+}
+
+void()
+{
+
+    int x [100000]
+
+     y = malloc(10000)
+
+     free(y) //Y's memory is freed when free is called
+}
+
+//X's memory is freed after function ends
+
+
+void unionExample()
+{
+    union data
+     {
+        int idata ;
+        float fdata ;
+        char* sdata ;
+    } d1 , d2 , d3;
+
+    struct struct_data
+     {
+        int idata ;
+        float fdata ;
+        char* sdata ;
+    } sd1;
+
+    d1.idata = 10;
+    d1.fdata = 3.14F;
+    d1.sdata="hello world" ;
+
+    printf("x: %d", d1.idata);
+
+    enum dtype
+    {
+        INT,
+        FLOAT,
+        CHAR
+    } ;
+
+    struct variant
+    {
+        union data data ;
+        enum dtype type ;
+    };
+
+    struct variant example_union;
+    example_union.type = INT;
+    example_union.data.idata = 10;
+
+    if(example_union.type == INT)
+        printf("x: %d", example_union.data.idata);
+    else if(example_union.type == FLOAT)
+        printf("x: %1.2f", example_union.data.fdata);
+
+
+}
+
+void structExample()
+{
+    struct Point
+    {
+        int x;
+        int y;
+    };
+
+    struct Point a = {10,11};
+    struct Point b = {15,16};
+    struct Point c = {17,18};
+
+    //printf("x: %d, y:%d", a.x, a.y);
+
+    struct Triangle
+    {
+        int id;
+        struct Point pa;
+        struct Point pb;
+        struct Point pc;
+        struct Triangle* next;
+    };
+
+
+    struct Triangle triangle1 = {};
+    struct Triangle triangle2 = {};
+
+    triangle1.id = 1;
+    triangle1.pa = a;
+    triangle1.pb = b;
+    triangle1.pc = c;
+    triangle1.next = &triangle2;
+
+    triangle2.id = 2;
+    triangle2.pa = a;
+    triangle2.pb = b;
+    triangle2.pc = c;
+    triangle2.next = NULL;
+
+
+    struct Triangle* t = &triangle1;
+    //Process all triangle starting from first
+    while(true)
+    {
+        printf("Triangle id: %d, -> x: %d, y:%d \n", t->id, t->pa.x, t->pa.y);
+
+
+        //If link to next struct is NULL then break out
+        if(t->next == NULL)
+            break;
+
+        t = t->next;
+
+    }
+
+}
 //CHECK THIS
 //#define array_length (arr) (sizeof(arr) == 0 ? 0 : sizeof(arr)/sizeof ((arr)[0]))
 
